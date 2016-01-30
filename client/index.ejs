@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Card Games</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+	<script src="./javascripts/decks.js"></script>
+	<script>
+		$(document).ready(function(){
+			console.log("Document is ready and JQuery is working great!");
+			$("#new_game_button").click(function(){
+				console.log("New game requested.");
+				var testDeck = new Deck;
+				testDeck.testFunction();
+			});
+		});
+	</script>
+</head>
+<body>
+	<h1>Card Games</h1>
+	<button id="new_game_button">New Game</button>
+</body>
+</html>
