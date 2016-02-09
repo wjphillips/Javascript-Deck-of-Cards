@@ -2,21 +2,61 @@
 <html>
 <head>
 	<title>Card Games</title>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/project.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 	<script src="./javascripts/decks.js"></script>
 	<script>
 		$(document).ready(function(){
 			console.log("Document is ready and JQuery is working great!");
+			//User requests a new game
 			$("#new_game_button").click(function(){
+
+				//Initial game setup
 				console.log("New game requested.");
-				var testDeck = new Deck;
-				testDeck.testFunction();
+				var newGame = new Game();
+				$("#player_hand, #dealer_hand").html("");
+				$("#dealer_hand").append(" " + newGame.dealer.hand[1].name + ". ");
+				for(var i=0; i<2; i++){
+					$("#player_hand").append(" " + newGame.player.hand[i].name + ". ");
+				};
+				$("#game_div").slideDown();
+
+				//User "hit" logic
+				$("#hit_button").click(function(){
+					console.log("Player has requested a hit.");
+					if(newGame.player.hasBusted == true){
+						console.log("Player has busted and cannot hit.");
+						return false;
+					}
+					newGame.deck.draw(newGame.player);
+					$("#player_hand").append(" " + newGame.player.hand[newGame.player.hand.length - 1].name + ". ");
+					newGame.player.calculateTotalPoints();
+					if(newGame.player.hasBusted == true){
+						$("#player_hand_total").html("Your Hand: BUST!");
+					};
+				});
 			});
 		});
 	</script>
 </head>
 <body>
-	<h1>Card Games</h1>
-	<button id="new_game_button">New Game</button>
+	<div id="container">
+		<h1>Card Games</h1>
+		<button id="new_game_button">New Game</button>
+		<div id="game_div">
+			<h2>The game is Blackjack</h2>
+			<p id="user_instructions">It is your turn, would you like to hit or stay?</p>
+			<div id="dealer_hand_div" class="hand_div">
+				<h3>Dealer's Hand:</h3>
+				<p id="dealer_hand"><span id="face_down_card">***face down***</span></p>
+			</div>
+			<div id="player_hand_div" class="hand_div">
+				<h3 id="player_hand_total">Your Hand: </h3>
+				<p id="player_hand"></p>
+			</div>
+			<button id="hit_button">Hit me brah!</button>
+			<button id="stay_button">I'll stay brah...</button>
+		</div>
+	</div>
 </body>
 </html>
