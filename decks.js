@@ -38,11 +38,11 @@
 //The draw method takes the top card from the deck and adds it to the players hand
 	Deck.prototype.draw = function (player){
 		if(player.hasBusted == true){
-			console.log("User has busted and cannot draw another card.");
+			console.log(player.name + " has busted and cannot draw another card.");
 			return false;
 		};
 		if(player.totalPoints == 21){
-			console.log("User has 21 and cannot draw another card.");
+			console.log(player.name + " has 21 and cannot draw another card.");
 			return false;
 		};
 		var deck = this.cards;
@@ -131,6 +131,7 @@
 		this.player = new Player("Player 1");
 		this.dealer = new Player("Dealer");
 		this.deck = new Deck();
+		this.gameOver = false;
 		for(var i=1; i<5; i++){
 			this.deck.shuffle();
 		};
