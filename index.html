@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Card Games</title>
+	<link rel="stylesheet" type="text/css" href="project.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+	<script src="decks.js"></script>
+	<script>
+		$(document).ready(function(){
+			console.log("Document is ready and JQuery is working great!");
+			//User requests a new game
+			$("#new_game_button").click(function(){
+
+				//Initial game setup (deal cards, set up game UI, then display it)
+				console.log("New game requested.");
+				var newGame = new Game();
+				$("#user_instructions").html("It is your turn, would you like to hit or stay?");
+				$("#player_hand, #dealer_hand").html("| ");
+				$("#dealer_hand").html("| ***Face down*** | " + newGame.dealer.hand[1].name + " | ");
+				$("#dealer_hand_total").html("Dealer's Hand: " + newGame.dealer.hand[1].pointValue);
+				for(var i=0; i<2; i++){
+					$("#player_hand").append(newGame.player.hand[i].name + " | ");
+				};
+				$("#player_hand_total").html("Your Hand: " + newGame.player.totalPoints);
+				$("#blackjack_div").slideDown();
+
+				//User "hit" logic
+				$("#hit_button").click(function(){
+					console.log("Player has requested a hit.");
+
+					//Check if player gets to 21 exactly
+					if(newGame.player.totalPoints == 21){
+						console.log("Player has 21 and cannot hit.");
+						return false;
+					}
+
+					//Draw the card from the deck and give it to the player
+					newGame.deck.draw(newGame.player);
+
+					//Update the player's hand on the page
+					var handTemp = [];
+					for(var i=0; i<newGame.player.hand.length; i++){
+						handTemp.push(newGame.player.hand[i].name);
+					};
+					$("#player_hand").html("| " + handTemp.join(" | ") + " |");
+					
+					//Count up the new point total and display it
+					newGame.player.calculateTotalPoints();
+					$("#player_hand_total").html("Your Hand: " + newGame.player.totalPoints);
+
+					//If user busts:
+					if(newGame.player.hasBusted == true){
+						$("#player_hand_total").html("Your Hand: BUST!");
+						$("#user_instructions").html("Sorry, you busted :( Click 'New Game' above to play again!");
+					}
+					else{
+						$("#user_instructions").html("It is your turn, would you like to hit or stay?");
+					};
+				});
+
+				//User "stay" logic
+				$("#stay_button").click(function(){
+					console.log("User has decided to stay with " + newGame.player.totalPoints);
+					$("#user_instructions").html("You have chosen to stay with " + newGame.player.totalPoints + " points. It is now the dealer's turn.");
+					$("#dealer_hand").html("| ");
+					for(var i=0; i<2; i++){
+						$("#dealer_hand").append(newGame.dealer.hand[i].name + " | ");
+					};
+					$("#dealer_hand_total").html("Dealer's Hand: " + newGame.dealer.totalPoints);
+				});
+			});
+		});
+	</script>
+</head>
+<body>
+	<div id="container">
+		<h1>Card Games</h1>
+		<button id="new_game_button">New Game</button>
+		<div id="blackjack_div">
+			<h2>The game is Blackjack</h2>
+			<h4 id="user_instructions"></h4>
+			<div id="dealer_hand_div" class="hand_div">
+				<h3 id="dealer_hand_total"></h3>
+				<p id="dealer_hand"></p>
+			</div>
+			<div id="player_hand_div" class="hand_div">
+				<h3 id="player_hand_total"></h3>
+				<p id="player_hand"></p>
+			</div>
+			<button id="hit_button">Hit me brah!</button>
+			<button id="stay_button">I'll stay brah...</button>
+		</div>
+	</div>
+</body>
+</html>
